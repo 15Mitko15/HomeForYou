@@ -13,3 +13,4 @@ DB_PASS = os.getenv("DB_PASS")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DATABASE_URL = os.getenv("DATABASE_URL") or ""
+JWT_SECRET = os.getenv("JWT_SECRET") or ""
