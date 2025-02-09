@@ -15,4 +15,4 @@ class Neighborhood(Base):
     city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
 
     city = relationship("City", back_populates="neighborhoods")
-    properties = relationship("Property", back_populates="neighborhood")
+    properties = relationship("Property", back_populates="neighborhoods")

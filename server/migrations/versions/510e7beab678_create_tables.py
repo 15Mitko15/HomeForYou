@@ -1,11 +1,11 @@
-"""Create a lot of tables"""
+"""All tables migration"""
 
 from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
-revision: str = "c4a995e9c695"
+revision: str = "510e7beab678"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -42,6 +42,7 @@ def upgrade() -> None:
     op.create_table(
         "properties",
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column("title", sa.String, nullable=False, unique=False),
         sa.Column("description", sa.String(), nullable=False, unique=False),
         sa.Column("price", sa.Integer(), nullable=False, unique=False),
         sa.Column("area", sa.Integer(), nullable=False, unique=False),
@@ -49,6 +50,12 @@ def upgrade() -> None:
             "neighborhood_id",
             sa.Integer,
             sa.ForeignKey("neighborhoods.id"),
+            nullable=False,
+        ),
+        sa.Column(
+            "user_id",
+            sa.Integer,
+            sa.ForeignKey("users.id"),
             nullable=False,
         ),
     )

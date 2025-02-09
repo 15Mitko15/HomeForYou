@@ -15,6 +15,8 @@ class Property(Base):
     price = Column(Integer, nullable=False)
     area = Column(Integer, nullable=False)
     neighborhood_id = Column(Integer, ForeignKey("neighborhoods.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     neighborhood = relationship("Neighborhood", back_populates="properties")
-    favorites = relationship("Favorite", back_populates="property")
+    favorites = relationship("Favorite", back_populates="properties")
+    owner = relationship("User", back_populates="properties")
