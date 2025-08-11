@@ -2,11 +2,11 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from server.src.models.usersModel import User
-from server.src.models.propertiesModel import Property
-from server.src.models.favoritesModel import Favorite
-from server.src.errors import UniqueEmailError
-from server.src.services.hashService import Hash
+from src.models.usersModel import User
+from src.models.propertiesModel import Property
+from src.models.favoritesModel import Favorite
+from src.errors import UniqueEmailError
+from src.services.hashService import Hash
 
 
 class UserService:

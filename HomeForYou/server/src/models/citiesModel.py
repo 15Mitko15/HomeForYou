@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
-from server.src.database import Base
+from src.database import Base
 
 
 class City(Base):

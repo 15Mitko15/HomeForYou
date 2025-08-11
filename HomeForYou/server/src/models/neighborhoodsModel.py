@@ -2,7 +2,7 @@
 
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, ForeignKey
-from server.src.database import Base
+from src.database import Base
 
 
 class Neighborhood(Base):

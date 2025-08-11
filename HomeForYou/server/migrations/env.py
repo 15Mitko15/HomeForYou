@@ -5,8 +5,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from server.src.database import Base
-from server.src.config import DATABASE_URL
+from src.database import Base
+from src.config import DATABASE_URL
 
 # pylint: disable=no-member
 # This is the Alembic Config object

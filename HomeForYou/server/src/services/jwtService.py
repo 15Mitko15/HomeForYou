@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Any
 from fastapi import HTTPException
-from server.src.config import JWT_SECRET
+from src.config import JWT_SECRET
 
 
 class JWTService:

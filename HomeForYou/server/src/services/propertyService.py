@@ -1,9 +1,9 @@
 """Service for handling property-related operations."""
 
 from sqlalchemy.orm import Session
-from server.src.models.favoritesModel import Favorite
-from server.src.models.propertiesModel import Property
-from server.src.models.usersModel import User
+from src.models.favoritesModel import Favorite
+from src.models.propertiesModel import Property
+from src.models.usersModel import User
 
 
 class PropertyService:

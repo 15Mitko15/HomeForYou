@@ -1,9 +1,9 @@
 """Service for handling neighborhood-related operations."""
 
 from sqlalchemy.orm import Session
-from server.src.models.neighborhoodsModel import Neighborhood
-from server.src.models.propertiesModel import Property
-from server.src.models.citiesModel import City
+from src.models.neighborhoodsModel import Neighborhood
+from src.models.propertiesModel import Property
+from src.models.citiesModel import City
 
 
 class NeighborhoodService:
