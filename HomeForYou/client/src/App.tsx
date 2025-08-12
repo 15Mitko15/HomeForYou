@@ -1,5 +1,5 @@
-import HomePage from "./pages/home-page";
+import Router from "./pages/rauter";
 
 export function App() {
-  return <HomePage />
+  return <Router />;
 }
