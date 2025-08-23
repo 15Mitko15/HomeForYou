@@ -18,21 +18,19 @@ import { makeStyles } from "../components/make-styles";
 
 const styles = makeStyles({
   heroBox: {
-    backgroundImage: "url(https://via.placeholder.com/1600x600)",
     backgroundSize: "cover",
     backgroundPosition: "center",
-    color: "#fff",
     textAlign: "center",
     py: 10,
-    width: "100%", // ensures full width for background image
+    width: "100%",
   },
   searchContainer: {
     mt: 4,
     backgroundColor: "rgba(255,255,255,0.85)",
     p: 3,
     borderRadius: 2,
-    maxWidth: 900, // prevents stretching too wide
-    mx: "auto", // horizontally center the container
+    maxWidth: 900,
+    mx: "auto",
   },
   featuredContainer: {
     display: "flex",

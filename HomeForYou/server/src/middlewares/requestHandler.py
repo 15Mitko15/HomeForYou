@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 
 def request_handler(
-    func: Callable[..., Awaitable[Any]]
+    func: Callable[..., Awaitable[Any]],
 ) -> Callable[..., Awaitable[JSONResponse]]:
     @wraps(func)
     async def wrapper(request: Request, *args: Any, **kwargs: Any) -> JSONResponse:
@@ -20,7 +20,7 @@ def request_handler(
         except ValidationError as e:
             return JSONResponse(
                 status_code=400,
-                content={"message": "Validation error", "errors": e.errors()},
+                content={"message": "Validation error", "errors": e.errors()},  # type: ignore
             )
         except HTTPException as e:
             return JSONResponse(

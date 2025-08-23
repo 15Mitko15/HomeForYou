@@ -1,7 +1,7 @@
-import jwt
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Any
 from fastapi import HTTPException
+from jose import jwt, JWTError
 from src.config import JWT_SECRET
 
 
@@ -23,10 +23,12 @@ class JWTService:
         try:
             decoded_token = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             return decoded_token
-        except jwt.ExpiredSignatureError:
+        except jwt.ExpiredSignatureError:  # type: ignore
             raise HTTPException(status_code=401, detail="Token has expired")
-        except jwt.InvalidTokenError:
+        except JWTError:
             raise HTTPException(status_code=401, detail="Invalid token")
 
 
-jwt_service = JWTService()
+# Create a function to be a dependency
+def get_jwt_service() -> JWTService:
+    return JWTService()

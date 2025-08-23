@@ -1,12 +1,20 @@
 """ENV"""
 
+import sys
+from os.path import abspath, dirname
+
+sys.path.insert(
+    0,
+    dirname(dirname(abspath(__file__))),
+)
+
 import asyncio
 from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from src.config import DB_URL
 from src.database import Base
-from src.config import DATABASE_URL
 
 # pylint: disable=no-member
 # This is the Alembic Config object
@@ -35,7 +43,7 @@ def do_run_migrations(connection):  # type: ignore
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
-    url = DATABASE_URL.replace("+asyncpg", "")  # Use sync URL format
+    url = DB_URL.replace("+asyncpg", "")  # Use sync URL format
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -49,7 +57,7 @@ def run_migrations_offline():
 
 def run_migrations_online():
     """Run migrations in 'online' (async) mode."""
-    connectable = create_async_engine(DATABASE_URL)
+    connectable = create_async_engine(DB_URL)
 
     async def run_async_migrations():
         async with connectable.connect() as connection:
