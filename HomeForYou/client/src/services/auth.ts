@@ -1,38 +1,21 @@
 import { AuthError } from "../errors";
+import { LogUser, RegisterUser } from "../schemas/userSchemas";
 import { http } from "./http";
 import { userInfoService } from "./userInfo";
 
-export interface RegisterAttributes {
-  name: string;
-  email: string;
-  password: string;
-}
-
 class AuthService {
-  async register(body: RegisterAttributes) {
+  async register(body: RegisterUser) {
     await http.post("/auth/register", { body });
-  }
-
-  async googleLogin(authorizationCode: string) {
-    await this.login(() =>
-      http.post("/auth/login", { body: { authorizationCode } })
-    );
-  }
-
-  async guestLogin() {
-    await this.login(() => http.post("/auth/guest", {}));
   }
 
   logout() {
     userInfoService.clear();
   }
 
-  private async login(
-    loadHeaders: () => Promise<{
-      headers: Headers;
-    }>
-  ) {
-    const { headers } = await loadHeaders();
+  async login(body: LogUser) {
+    const { headers } = await http.post("/auth/login", {
+      body,
+    });
 
     const bearerToken = headers.get("authorization");
 

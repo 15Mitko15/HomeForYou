@@ -8,15 +8,23 @@ import {
   Typography,
   Link,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
+import { RegisterUser } from "../schemas/userSchemas";
+import { authService } from "../services/auth";
+import { useAsyncAction } from "../hooks/useAsyncAction";
+import { ErrorContainer } from "../components/errorContainer";
 
 export default function RegisterPage() {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterUser>();
 
-  const onSubmit = (data: any) => {
-    console.log("Register data:", data);
-  };
+  const { trigger, error } = useAsyncAction(async (data: RegisterUser) => {
+    await authService.register(data);
+  });
 
   return (
     <Container
@@ -42,26 +50,32 @@ export default function RegisterPage() {
             Create your account to get started.
           </Typography>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(trigger)}>
             <TextField
               fullWidth
               label="Username"
               margin="normal"
-              {...register("username")}
+              {...register("username", { required: "Username is required" })}
+              error={!!errors.username}
+              helperText={errors.username?.message}
             />
             <TextField
               fullWidth
               label="Email"
               type="email"
               margin="normal"
-              {...register("email")}
+              {...register("email", { required: "Email is required" })}
+              error={!!errors.email}
+              helperText={errors.email?.message}
             />
             <TextField
               fullWidth
               label="Password"
               type="password"
               margin="normal"
-              {...register("password")}
+              {...register("password", { required: "Password is required" })}
+              error={!!errors.username}
+              helperText={errors.username?.message}
             />
 
             <Button
@@ -72,6 +86,10 @@ export default function RegisterPage() {
             >
               Register
             </Button>
+
+            {!!error && (
+              <ErrorContainer message="Something went wrong. Please try again." />
+            )}
           </form>
 
           <Typography variant="body2" align="center" sx={{ mt: 3 }}>

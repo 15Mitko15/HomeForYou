@@ -1,32 +1,51 @@
 """Service for handling neighborhood-related operations."""
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.neighborhoodsModel import Neighborhood
 from src.models.propertiesModel import Property
 from src.models.citiesModel import City
+from typing import List, Optional
 
 
 class NeighborhoodService:
     """Service class for handling neighborhood-related operations."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def get_neighborhood_by_name(self, name: str) -> Neighborhood | None:
-        """Find a neighborhood by name."""
-        return self.db.query(Neighborhood).filter(Neighborhood.name == name).first()
+    async def get_neighborhood_by_id(self, id: int) -> Optional[Neighborhood]:
+        """Find a neighborhood by id."""
+        result = await self.db.execute(
+            select(Neighborhood).filter(Neighborhood.id == id)
+        )
+        return result.scalars().first()
 
-    def get_properties_by_neighborhood(self, neighborhood_name: str) -> list[Property]:
+    async def get_all_neighborhoods(self) -> Optional[List[Neighborhood]]:
+        """Find all neighborhoods."""
+
+        result = await self.db.execute(select(Neighborhood))
+        return list(result.scalars().all())
+
+    async def get_properties_by_neighborhood(
+        self, neighborhood_id: int
+    ) -> List[Property]:
         """Get all properties in a specific neighborhood."""
-        neighborhood = self.get_neighborhood_by_name(neighborhood_name)
+        neighborhood = await self.get_neighborhood_by_id(neighborhood_id)
         if not neighborhood:
             return []
-        return self.db.query(Property).filter(Neighborhood.id == neighborhood.id).all()
+        result = await self.db.execute(
+            select(Property).filter(Property.neighborhood_id == neighborhood.id)
+        )
+        return list(result.scalars().all())
 
-    def get_neighborhood_city(self, neighborhood_name: str) -> City | None:
+    async def get_neighborhood_city(self, neighborhood_id: int) -> Optional[City]:
         """Get the city that this neighborhood is in."""
-        neighborhood = self.get_neighborhood_by_name(neighborhood_name)
+        neighborhood = await self.get_neighborhood_by_id(neighborhood_id)
 
         if not neighborhood:
             return None
-        return self.db.query(City).filter(neighborhood.city_id == City.id).first()
+        result = await self.db.execute(
+            select(City).filter(City.id == neighborhood.city_id)
+        )
+        return result.scalars().first()

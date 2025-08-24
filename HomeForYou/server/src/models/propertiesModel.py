@@ -18,5 +18,5 @@ class Property(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     neighborhood = relationship("Neighborhood", back_populates="properties")
-    favorites = relationship("Favorite", back_populates="properties")
+    favorites = relationship("Favorite", back_populates="property")
     owner = relationship("User", back_populates="properties")

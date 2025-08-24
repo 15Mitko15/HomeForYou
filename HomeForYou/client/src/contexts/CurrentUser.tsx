@@ -8,13 +8,14 @@ import {
 import { userInfoService } from "../services/userInfo";
 import { User } from "../types/user";
 
-const UserContext = createContext<User | null | undefined>(undefined);
+const UserContext = createContext<
+  Omit<User, "password" | "email"> | null | undefined
+>(undefined);
 
 interface CurrentUserProviderProps {
   children: ReactNode;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useCurrentUser() {
   const user = useContext(UserContext);
 
@@ -26,7 +27,9 @@ export function useCurrentUser() {
 }
 
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
-  const [user, setUser] = useState<User | null>(userInfoService.initialUser);
+  const [user, setUser] = useState<Omit<User, "password" | "email"> | null>(
+    null
+  );
 
   useEffect(() => {
     userInfoService.setHandler(setUser);

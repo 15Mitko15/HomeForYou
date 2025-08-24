@@ -13,4 +13,4 @@ class City(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False, unique=True)
 
-    neighborhoods = relationship("Neighborhood", back_populates="cities")
+    neighborhoods = relationship("Neighborhood", back_populates="city")

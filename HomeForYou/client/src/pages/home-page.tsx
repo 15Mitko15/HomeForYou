@@ -13,8 +13,14 @@ import {
   TableRow,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { makeStyles } from "../components/make-styles";
+import { useNeighborhoods } from "../contexts/neighborhoodContex";
+import { useCities } from "../contexts/citiesContext";
+import { useState, useMemo } from "react";
+import { HomeSchema } from "../schemas/homeSchemas";
+import { useProperties } from "../contexts/propertiesContext";
 
 const styles = makeStyles({
   heroBox: {
@@ -46,36 +52,37 @@ const styles = makeStyles({
 });
 
 export default function HomePage() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm<HomeSchema>();
+  const [filters, setFilters] = useState<HomeSchema>({});
 
-  const onSubmit = (data: any) => {
-    console.log("Search Data:", data);
+  const { cities } = useCities();
+  const { neighborhoods } = useNeighborhoods();
+  const { properties } = useProperties();
+
+  const selectedCityId = watch("city");
+
+  const filteredProperties = useMemo(() => {
+    return properties.filter((p) => {
+      if (filters.city && p.neighborhood_id) {
+        const n = neighborhoods.find((n) => n.id === p.neighborhood_id);
+        if (n?.city_id !== filters.city) return false;
+      }
+      if (filters.neighborhood && p.neighborhood_id !== filters.neighborhood) {
+        return false;
+      }
+      if (filters.price && p.price > filters.price) {
+        return false;
+      }
+      return true;
+    });
+  }, [filters, properties, neighborhoods]);
+
+  const onSubmit = (data: HomeSchema) => {
+    setFilters(data);
   };
-
-  const listings = [
-    {
-      id: 1,
-      title: "Modern Apartment in City Center",
-      price: "$1,200/mo",
-      img: "https://via.placeholder.com/400x250",
-    },
-    {
-      id: 2,
-      title: "Cozy Suburban House",
-      price: "$250,000",
-      img: "https://via.placeholder.com/400x250",
-    },
-    {
-      id: 3,
-      title: "Luxury Villa with Pool",
-      price: "$1,500,000",
-      img: "https://via.placeholder.com/400x250",
-    },
-  ];
 
   return (
     <Box>
-      {/* Hero Section */}
       <Box sx={styles.heroBox}>
         <Typography variant="h2" fontWeight="bold">
           Find Your Dream Home
@@ -84,7 +91,6 @@ export default function HomePage() {
           Buy or rent the perfect place for you
         </Typography>
 
-        {/* Search Form */}
         <Container sx={styles.searchContainer}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Table>
@@ -92,23 +98,38 @@ export default function HomePage() {
                 <TableRow>
                   <TableCell sx={styles.noBorderCell}>
                     <TextField
-                      fullWidth
-                      label="Location"
-                      {...register("location")}
-                    />
-                  </TableCell>
-                  <TableCell sx={styles.noBorderCell}>
-                    <TextField
                       select
                       fullWidth
-                      label="Type"
-                      defaultValue="buy"
-                      {...register("type")}
+                      label="City"
+                      {...register("city")}
                     >
-                      <MenuItem value="buy">Buy</MenuItem>
-                      <MenuItem value="rent">Rent</MenuItem>
+                      {cities.map((city) => (
+                        <MenuItem key={city.id} value={city.id}>
+                          {city.name}
+                        </MenuItem>
+                      ))}
                     </TextField>
                   </TableCell>
+
+                  {selectedCityId && (
+                    <TableCell sx={styles.noBorderCell}>
+                      <TextField
+                        select
+                        fullWidth
+                        label="Neighborhood"
+                        {...register("neighborhood")}
+                      >
+                        {neighborhoods
+                          .filter((n) => n.city_id === selectedCityId)
+                          .map((n) => (
+                            <MenuItem key={n.id} value={n.id}>
+                              {n.name}
+                            </MenuItem>
+                          ))}
+                      </TextField>
+                    </TableCell>
+                  )}
+
                   <TableCell sx={styles.noBorderCell}>
                     <TextField
                       fullWidth
@@ -116,14 +137,13 @@ export default function HomePage() {
                       {...register("price")}
                     />
                   </TableCell>
+
                   <TableCell sx={{ ...styles.noBorderCell, width: "1%" }}>
                     <Button
                       variant="contained"
                       type="submit"
                       sx={{ height: "100%" }}
-                    >
-                      Search
-                    </Button>
+                    />
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -136,25 +156,30 @@ export default function HomePage() {
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           Featured Listings
         </Typography>
+
+        {filteredProperties.length === 0 && (
+          <Typography>No properties found.</Typography>
+        )}
+
         <Table>
           <TableBody>
-            {listings.map((listing) => (
-              <TableRow key={listing.id}>
+            {filteredProperties.map((property) => (
+              <TableRow key={property.id}>
                 <TableCell sx={{ ...styles.noBorderCell, width: "250px" }}>
                   <Card>
                     <CardMedia
                       component="img"
                       height="150"
-                      image={listing.img}
-                      alt={listing.title}
+                      image={"https://via.placeholder.com/400x250"}
+                      alt={property.description}
                     />
                   </Card>
                 </TableCell>
                 <TableCell sx={styles.noBorderCell}>
                   <CardContent>
-                    <Typography variant="h6">{listing.title}</Typography>
+                    <Typography variant="h6">{property.description}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {listing.price}
+                      ${property.price}
                     </Typography>
                   </CardContent>
                 </TableCell>

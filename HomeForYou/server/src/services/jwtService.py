@@ -29,6 +29,5 @@ class JWTService:
             raise HTTPException(status_code=401, detail="Invalid token")
 
 
-# Create a function to be a dependency
 def get_jwt_service() -> JWTService:
     return JWTService()

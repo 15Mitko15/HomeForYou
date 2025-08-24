@@ -1,20 +1,32 @@
-# src/main.py
-
 from fastapi import FastAPI
-from src.routes import authRouter
+from src.routes import authRouter, propertyRouter, cityRouter, neighborhood
+from fastapi.middleware.cors import CORSMiddleware
 
-# Create the FastAPI app instance
 app = FastAPI(
     title="HomeForYou API",
     description="API for a real estate application.",
     version="1.0.0",
 )
 
-# Include your authentication router
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Authorization"],
+)
+
 app.include_router(authRouter.router)
+app.include_router(propertyRouter.router)
+app.include_router(cityRouter.router)
+app.include_router(neighborhood.router)
 
 
-# Optional: Add a root endpoint to easily check if the server is running
 @app.get("/")
 def read_root():
     """Root endpoint."""

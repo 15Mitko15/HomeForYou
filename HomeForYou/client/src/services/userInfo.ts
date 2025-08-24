@@ -3,7 +3,7 @@ import { LocalStorageServer } from "./localStorage";
 import { config } from "../config";
 import { User } from "../types/user";
 
-type AuthHandler = (user: User | null) => void;
+type AuthHandler = (user: Omit<User, "password" | "email"> | null) => void;
 
 export const LOCAL_STORAGE_USER = config.storage.user;
 
@@ -47,7 +47,7 @@ class UserInfoService {
     return this.storage.get();
   }
 
-  private getUserFromToken(token: string): User {
+  private getUserFromToken(token: string): Omit<User, "password" | "email"> {
     const decoded = jwtDecode(token) as User;
 
     return {
